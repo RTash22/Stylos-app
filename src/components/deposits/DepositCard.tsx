@@ -25,13 +25,13 @@ const DEPOSIT_STATUS_CONFIG: Record<DepositStatus, {
     color: '#B88444',
     bgColor: '#FFF4E6',
   },
-  comprobante_recibido: {
+  pendiente_comprobante: {
     label: 'Comprobante recibido',
     icon: 'file-document-check',
     color: '#7B6BA8',
     bgColor: '#EDE9FA',
   },
-  verificado: {
+  aprobado: {
     label: 'Verificado',
     icon: 'check-circle',
     color: '#667A4C',

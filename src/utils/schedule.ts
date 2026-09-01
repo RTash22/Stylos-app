@@ -64,13 +64,13 @@ export function detectOverlap(
         ['pendiente', 'confirmada', 'reprogramacion_propuesta'].includes(a.status),
     )
     .some((a) =>
-      doRangesOverlap(proposedStart, proposedEnd, parseISO(a.starts_at), parseISO(a.ends_at)),
+      doRangesOverlap(proposedStart, proposedEnd, parseISO(a.start_time), parseISO(a.end_time)),
     );
 
   if (occupied) return true;
 
   return timeBlocks.some((b) =>
-    doRangesOverlap(proposedStart, proposedEnd, parseISO(b.starts_at), parseISO(b.ends_at)),
+    doRangesOverlap(proposedStart, proposedEnd, parseISO(b.start_time), parseISO(b.end_time)),
   );
 }
 
@@ -93,7 +93,7 @@ export function buildDayBlocks(
 
   // Add appointment blocks
   for (const apt of appointments) {
-    const pos = getBlockPosition(apt.starts_at, apt.ends_at, dayStartHour);
+    const pos = getBlockPosition(apt.start_time, apt.end_time, dayStartHour);
     blocks.push({
       id: apt.id,
       type: 'appointment',
@@ -104,7 +104,7 @@ export function buildDayBlocks(
 
   // Add time block (manual blocks)
   for (const tb of timeBlocks) {
-    const pos = getBlockPosition(tb.starts_at, tb.ends_at, dayStartHour);
+    const pos = getBlockPosition(tb.start_time, tb.end_time, dayStartHour);
     blocks.push({
       id: tb.id,
       type: 'blocked',
@@ -114,16 +114,16 @@ export function buildDayBlocks(
   }
 
   // Add break block
-  if (workingHours.break_start && workingHours.break_end) {
+  if (false) {
     const breakStartDate = setTimeOnDate(
       date,
-      parseInt(workingHours.break_start.split(':')[0]),
-      parseInt(workingHours.break_start.split(':')[1]),
+      parseInt(null.split(':')[0]),
+      parseInt(null.split(':')[1]),
     );
     const breakEndDate = setTimeOnDate(
       date,
-      parseInt(workingHours.break_end.split(':')[0]),
-      parseInt(workingHours.break_end.split(':')[1]),
+      parseInt(null.split(':')[0]),
+      parseInt(null.split(':')[1]),
     );
     const startMinutes = getMinutesFromMidnight(breakStartDate);
     const durationMinutes = differenceInMinutes(breakEndDate, breakStartDate);
@@ -148,11 +148,11 @@ export function buildDayBlocks(
     .sort((a, b) => a.start - b.start);
 
   const whStartMinutes =
-    parseInt(workingHours.start_time.split(':')[0]) * 60 +
-    parseInt(workingHours.start_time.split(':')[1]);
+    parseInt(workingHours.start_local_time.split(':')[0]) * 60 +
+    parseInt(workingHours.start_local_time.split(':')[1]);
   const whEndMinutes =
-    parseInt(workingHours.end_time.split(':')[0]) * 60 +
-    parseInt(workingHours.end_time.split(':')[1]);
+    parseInt(workingHours.end_local_time.split(':')[0]) * 60 +
+    parseInt(workingHours.end_local_time.split(':')[1]);
 
   let cursor = whStartMinutes;
   for (const range of occupiedRanges) {

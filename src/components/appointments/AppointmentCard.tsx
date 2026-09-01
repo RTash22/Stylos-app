@@ -18,8 +18,8 @@ interface Props {
 
 export function AppointmentCard({ appointment, heightPx, onPress }: Props) {
   const stateColor = appointmentStateColors[appointment.status] ?? appointmentStateColors.pendiente;
-  const startTime = formatTime(toLocalDate(appointment.starts_at));
-  const endTime = formatTime(toLocalDate(appointment.ends_at));
+  const startTime = formatTime(toLocalDate(appointment.start_time));
+  const endTime = formatTime(toLocalDate(appointment.end_time));
   const isCompact = heightPx < 60;
 
   return (

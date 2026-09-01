@@ -23,8 +23,8 @@ export default function AdminSettingsScreen() {
   const [settings, setSettings] = useState<BankSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
-    bank_name: '', beneficiary: '', clabe: '',
-    default_amount: '', payment_minutes: '', deposits_enabled: true,
+    // bank_name: '', // beneficiary: '', // clabe: '',
+    default_deposit_amount: '', payment_hold_minutes: '', // deposits_enabled: true,
   });
 
   const fetch = useCallback(async () => {
@@ -34,9 +34,9 @@ export default function AdminSettingsScreen() {
       const s = data as BankSettings;
       setSettings(s);
       setForm({
-        bank_name: s.bank_name, beneficiary: s.beneficiary, clabe: s.clabe,
-        default_amount: s.default_amount.toString(), payment_minutes: s.payment_minutes.toString(),
-        deposits_enabled: s.deposits_enabled,
+        // bank_name: s.bank_name, // beneficiary: s.beneficiary, // clabe: s.clabe,
+        default_deposit_amount: s.default_amount.toString(), payment_hold_minutes: s.payment_minutes.toString(),
+        // deposits_enabled: s.deposits_enabled,
       });
     }
     setLoading(false);
@@ -48,12 +48,12 @@ export default function AdminSettingsScreen() {
     if (!settings) return;
     await guard(async () => {
       const { error } = await supabase.from('bank_settings').update({
-        bank_name: form.bank_name.trim(),
-        beneficiary: form.beneficiary.trim(),
-        clabe: form.clabe.trim(),
-        default_amount: parseFloat(form.default_amount) || 0,
-        payment_minutes: parseInt(form.payment_minutes) || 120,
-        deposits_enabled: form.deposits_enabled,
+        // bank_name: form.bank_name.trim(),
+        // beneficiary: form.beneficiary.trim(),
+        // clabe: form.clabe.trim(),
+        default_deposit_amount: parseFloat(form.default_amount) || 0,
+        payment_hold_minutes: parseInt(form.payment_minutes) || 120,
+        // deposits_enabled: form.deposits_enabled,
         updated_at: new Date().toISOString(),
         updated_by: profile?.id,
       }).eq('id', settings.id);
@@ -86,7 +86,7 @@ export default function AdminSettingsScreen() {
                 <Text style={styles.label}>Banco</Text>
                 <TextInput
                   style={styles.input} value={form.bank_name}
-                  onChangeText={(v) => setForm((f) => ({ ...f, bank_name: v }))}
+                  onChangeText={(v) => setForm((f) => ({ ...f, // bank_name: v }))}
                   placeholder="Nombre del banco" placeholderTextColor={colors.placeholder}
                 />
               </View>
@@ -94,7 +94,7 @@ export default function AdminSettingsScreen() {
                 <Text style={styles.label}>Beneficiario</Text>
                 <TextInput
                   style={styles.input} value={form.beneficiary}
-                  onChangeText={(v) => setForm((f) => ({ ...f, beneficiary: v }))}
+                  onChangeText={(v) => setForm((f) => ({ ...f, // beneficiary: v }))}
                   placeholder="Nombre del beneficiario" placeholderTextColor={colors.placeholder}
                 />
               </View>
@@ -102,7 +102,7 @@ export default function AdminSettingsScreen() {
                 <Text style={styles.label}>CLABE</Text>
                 <TextInput
                   style={styles.input} value={form.clabe}
-                  onChangeText={(v) => setForm((f) => ({ ...f, clabe: v }))}
+                  onChangeText={(v) => setForm((f) => ({ ...f, // clabe: v }))}
                   placeholder="18 dígitos" placeholderTextColor={colors.placeholder}
                   keyboardType="number-pad" maxLength={18}
                 />
@@ -111,7 +111,7 @@ export default function AdminSettingsScreen() {
                 <Text style={styles.label}>Monto predeterminado ($)</Text>
                 <TextInput
                   style={styles.input} value={form.default_amount}
-                  onChangeText={(v) => setForm((f) => ({ ...f, default_amount: v }))}
+                  onChangeText={(v) => setForm((f) => ({ ...f, default_deposit_amount: v }))}
                   keyboardType="decimal-pad" placeholder="200"
                   placeholderTextColor={colors.placeholder}
                 />
@@ -120,7 +120,7 @@ export default function AdminSettingsScreen() {
                 <Text style={styles.label}>Minutos para pagar</Text>
                 <TextInput
                   style={styles.input} value={form.payment_minutes}
-                  onChangeText={(v) => setForm((f) => ({ ...f, payment_minutes: v }))}
+                  onChangeText={(v) => setForm((f) => ({ ...f, payment_hold_minutes: v }))}
                   keyboardType="number-pad" placeholder="120"
                   placeholderTextColor={colors.placeholder}
                 />
@@ -129,7 +129,7 @@ export default function AdminSettingsScreen() {
                 <Text style={styles.label}>Anticipos activos</Text>
                 <Switch
                   value={form.deposits_enabled}
-                  onValueChange={(v) => setForm((f) => ({ ...f, deposits_enabled: v }))}
+                  onValueChange={(v) => setForm((f) => ({ ...f, // deposits_enabled: v }))}
                   trackColor={{ false: colors.disabled, true: colors.oliveGold }}
                   thumbColor={colors.surface}
                 />

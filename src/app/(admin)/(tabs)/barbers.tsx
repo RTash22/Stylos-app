@@ -19,7 +19,7 @@ export default function AdminBarbersScreen() {
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.from('profiles').select('*').eq('role', 'barber').order('full_name');
+    const { data } = await supabase.from('profiles').select('*').eq('role', 'peluquero').order('full_name');
     setBarbers((data as Profile[]) ?? []);
     setLoading(false);
   }, []);

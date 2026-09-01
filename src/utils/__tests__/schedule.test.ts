@@ -80,12 +80,12 @@ describe('detectOverlap', () => {
     client_id: 'c-1',
     barber_id: 'b-1',
     service_id: 's-1',
-    starts_at: '2025-01-15T09:00:00.000Z',
-    ends_at: '2025-01-15T10:00:00.000Z',
+    start_time: '2025-01-15T09:00:00.000Z',
+    end_time: '2025-01-15T10:00:00.000Z',
     status: 'confirmada',
-    notes: null,
-    proposed_starts_at: null,
-    proposed_ends_at: null,
+    history_notes: null, customer_notes: null,
+    proposed_start_time: null,
+    proposed_end_time: null,
     cancellation_reason: null,
     created_at: '2025-01-15T00:00:00.000Z',
     updated_at: '2025-01-15T00:00:00.000Z',
@@ -117,8 +117,8 @@ describe('detectOverlap', () => {
     const block: TimeBlock = {
       id: 'tb-1',
       barber_id: 'b-1',
-      starts_at: '2025-01-15T14:00:00.000Z',
-      ends_at: '2025-01-15T15:00:00.000Z',
+      start_time: '2025-01-15T14:00:00.000Z',
+      end_time: '2025-01-15T15:00:00.000Z',
       reason: 'Lunch',
       created_at: '2025-01-15T00:00:00.000Z',
     };
@@ -210,8 +210,8 @@ describe('buildDayBlocks', () => {
     day_of_week: 3,
     start_time: '09:00',
     end_time: '20:00',
-    break_start: '14:00',
-    break_end: '15:00',
+    
+    
     is_active: true,
   };
 
@@ -253,12 +253,12 @@ describe('buildDayBlocks', () => {
       client_id: 'c-1',
       barber_id: 'b-1',
       service_id: 's-1',
-      starts_at: '2025-01-15T10:00:00.000Z',
-      ends_at: '2025-01-15T11:00:00.000Z',
+      start_time: '2025-01-15T10:00:00.000Z',
+      end_time: '2025-01-15T11:00:00.000Z',
       status: 'confirmada',
-      notes: null,
-      proposed_starts_at: null,
-      proposed_ends_at: null,
+      history_notes: null, customer_notes: null,
+      proposed_start_time: null,
+      proposed_end_time: null,
       cancellation_reason: null,
       created_at: '2025-01-15T00:00:00.000Z',
       updated_at: '2025-01-15T00:00:00.000Z',
@@ -274,8 +274,8 @@ describe('buildDayBlocks', () => {
     const tb: TimeBlock = {
       id: 'tb-1',
       barber_id: 'b-1',
-      starts_at: '2025-01-15T16:00:00.000Z',
-      ends_at: '2025-01-15T17:00:00.000Z',
+      start_time: '2025-01-15T16:00:00.000Z',
+      end_time: '2025-01-15T17:00:00.000Z',
       reason: 'Personal',
       created_at: '2025-01-15T00:00:00.000Z',
     };

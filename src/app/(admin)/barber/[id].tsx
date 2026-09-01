@@ -68,7 +68,7 @@ export default function AdminBarberDetailScreen() {
           <Text style={[styles.statusText, { color: barber.is_active ? colors.success : colors.danger }]}>
             {barber.is_active ? 'Activo' : 'Inactivo'}
           </Text>
-          {barber.phone && <Text style={styles.phone}>{barber.phone}</Text>}
+          {barber.phone_e164 && <Text style={styles.phone_e164}>{barber.phone_e164}</Text>}
         </View>
 
         <Pressable

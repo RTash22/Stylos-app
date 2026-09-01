@@ -59,7 +59,7 @@ export default function BarberClientsScreen() {
       <View style={styles.clientInfo}>
         <Text style={styles.clientName}>{item.full_name}</Text>
         <Text style={styles.clientPhone}>
-          {item.phone ? `${item.phone.slice(0, 4)}••••${item.phone.slice(-2)}` : 'Sin teléfono'}
+          {item.phone_e164 ? `${item.phone_e164.slice(0, 4)}••••${item.phone_e164.slice(-2)}` : 'Sin teléfono'}
         </Text>
       </View>
       {item.strikes >= STRIKE_THRESHOLD && (

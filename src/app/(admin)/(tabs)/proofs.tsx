@@ -83,7 +83,7 @@ export default function AdminProofsScreen() {
   }, [fetch]);
 
   const pendingCount = useMemo(() =>
-    deposits.filter((d) => d.status === 'comprobante_recibido').length,
+    deposits.filter((d) => d.status === 'pendiente' /* as comprobante_recibido doesn't exist */).length,
   [deposits]);
 
   const renderItem = ({ item }: { item: Deposit }) => (

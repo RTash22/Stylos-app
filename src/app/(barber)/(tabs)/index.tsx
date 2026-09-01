@@ -41,7 +41,7 @@ export default function BarberHomeScreen() {
     return appointments.find(
       (a) =>
         ['confirmada', 'pendiente'].includes(a.status) &&
-        new Date(a.starts_at) > now,
+        new Date(a.start_time) > now,
     );
   }, [appointments]);
 
@@ -112,7 +112,7 @@ export default function BarberHomeScreen() {
           <View style={styles.nextCardBody}>
             <MaterialCommunityIcons name="clock-outline" size={20} color={colors.icon} />
             <Text style={styles.nextCardTime}>
-              {formatTime(toLocalDate(nextAppointment.starts_at))} – {formatTime(toLocalDate(nextAppointment.ends_at))}
+              {formatTime(toLocalDate(nextAppointment.start_time))} – {formatTime(toLocalDate(nextAppointment.end_time))}
             </Text>
           </View>
           {nextAppointment.service && (

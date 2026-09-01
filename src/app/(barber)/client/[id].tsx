@@ -63,7 +63,7 @@ export default function ClientDetailScreen() {
           </View>
           <Text style={styles.clientName}>{client.full_name}</Text>
           <Text style={styles.clientPhone}>
-            {client.phone ? `${client.phone.slice(0, 4)}••••${client.phone.slice(-2)}` : 'Sin teléfono'}
+            {client.phone_e164 ? `${client.phone_e164.slice(0, 4)}••••${client.phone_e164.slice(-2)}` : 'Sin teléfono'}
           </Text>
           {client.strikes > 0 && (
             <View style={styles.strikeBadge}>
@@ -100,10 +100,10 @@ export default function ClientDetailScreen() {
           appointments.map((apt) => (
             <Pressable key={apt.id} style={[styles.aptCard, shadows.sm]} onPress={() => router.push(`/(barber)/appointment/${apt.id}`)}>
               <View style={styles.aptRow}>
-                <Text style={styles.aptDate}>{formatFullDate(toLocalDate(apt.starts_at))}</Text>
+                <Text style={styles.aptDate}>{formatFullDate(toLocalDate(apt.start_time))}</Text>
                 <StatusBadge status={apt.status} size="sm" />
               </View>
-              <Text style={styles.aptService}>{apt.service?.name ?? '—'} · {formatTime(toLocalDate(apt.starts_at))}</Text>
+              <Text style={styles.aptService}>{apt.service?.name ?? '—'} · {formatTime(toLocalDate(apt.start_time))}</Text>
             </Pressable>
           ))
         )}

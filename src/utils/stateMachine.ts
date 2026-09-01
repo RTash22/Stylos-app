@@ -14,16 +14,17 @@ interface Transition {
 }
 
 export const STATE_TRANSITIONS: Record<AppointmentStatus, Transition[]> = {
+  expirada: [],
   pendiente: [
-    { to: 'confirmada', label: 'Aceptar', role: 'barber', requiresConfirmation: true },
-    { to: 'rechazada', label: 'Rechazar', role: 'barber', requiresConfirmation: true },
-    { to: 'reprogramacion_propuesta', label: 'Proponer otro horario', role: 'barber', requiresConfirmation: true },
+    { to: 'confirmada', label: 'Aceptar', role: 'peluquero', requiresConfirmation: true },
+    { to: 'rechazada', label: 'Rechazar', role: 'peluquero', requiresConfirmation: true },
+    { to: 'reprogramacion_propuesta', label: 'Proponer otro horario', role: 'peluquero', requiresConfirmation: true },
     { to: 'cancelada', label: 'Cancelar', role: 'admin', requiresConfirmation: true },
   ],
   confirmada: [
-    { to: 'completada', label: 'Completar', role: 'barber', requiresConfirmation: true, requiresNote: true },
-    { to: 'no_asistio', label: 'No asistió', role: 'barber', requiresConfirmation: true },
-    { to: 'reprogramacion_propuesta', label: 'Reprogramar', role: 'barber', requiresConfirmation: true },
+    { to: 'completada', label: 'Completar', role: 'peluquero', requiresConfirmation: true, requiresNote: true },
+    { to: 'no_asistio', label: 'No asistió', role: 'peluquero', requiresConfirmation: true },
+    { to: 'reprogramacion_propuesta', label: 'Reprogramar', role: 'peluquero', requiresConfirmation: true },
     { to: 'cancelada', label: 'Cancelar', role: 'any', requiresConfirmation: true },
   ],
   reprogramacion_propuesta: [
@@ -48,6 +49,7 @@ export function getAvailableTransitions(
 
 /** Human-readable status labels in Spanish */
 export const STATUS_LABELS: Record<AppointmentStatus, string> = {
+  expirada: 'Expirada',
   pendiente: 'Pendiente',
   confirmada: 'Confirmada',
   reprogramacion_propuesta: 'Reprogramación propuesta',
@@ -59,6 +61,7 @@ export const STATUS_LABELS: Record<AppointmentStatus, string> = {
 
 /** Icons for each status */
 export const STATUS_ICONS: Record<AppointmentStatus, string> = {
+  expirada: 'timer-off',
   pendiente: 'clock-outline',
   confirmada: 'check-circle-outline',
   reprogramacion_propuesta: 'calendar-clock',

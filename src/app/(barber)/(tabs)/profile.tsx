@@ -53,8 +53,8 @@ export default function BarberProfileScreen() {
           </View>
           <Text style={styles.profileName}>{profile?.full_name ?? 'Sin nombre'}</Text>
           <Text style={styles.profileRole}>Peluquero · {APP_NAME}</Text>
-          {profile?.phone && (
-            <Text style={styles.profilePhone}>{profile.phone}</Text>
+          {profile?.phone_e164 && (
+            <Text style={styles.profilePhone}>{profile.phone_e164}</Text>
           )}
         </View>
 

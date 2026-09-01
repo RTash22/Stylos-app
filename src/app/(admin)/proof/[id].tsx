@@ -82,7 +82,7 @@ export default function AdminProofDetailScreen() {
       const { error } = await supabase
         .from('deposits')
         .update({
-          status: 'verificado',
+          status: 'aprobado',
           verified_by: profile.id,
           verified_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

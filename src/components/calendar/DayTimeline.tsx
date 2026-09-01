@@ -28,10 +28,10 @@ export function DayTimeline({
 }: Props) {
   const scrollRef = useRef<ScrollView>(null);
   const startHour = workingHours
-    ? parseInt(workingHours.start_time.split(':')[0])
+    ? parseInt(workingHours.start_local_time.split(':')[0])
     : DEFAULT_WORK_START_HOUR;
   const endHour = workingHours
-    ? parseInt(workingHours.end_time.split(':')[0])
+    ? parseInt(workingHours.end_local_time.split(':')[0])
     : DEFAULT_WORK_END_HOUR;
 
   const hourLabels = useMemo(() => generateHourLabels(startHour, endHour), [startHour, endHour]);

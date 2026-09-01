@@ -34,9 +34,9 @@ describe('STATE_TRANSITIONS', () => {
     const rejectTransition = transitions.find(t => t.to === 'rechazada');
 
     expect(acceptTransition).toBeDefined();
-    expect(acceptTransition!.role).toBe('barber');
+    expect(acceptTransition!.role).toBe('peluquero');
     expect(rejectTransition).toBeDefined();
-    expect(rejectTransition!.role).toBe('barber');
+    expect(rejectTransition!.role).toBe('peluquero');
   });
 
   it('should allow completing from confirmada only', () => {
@@ -62,11 +62,11 @@ describe('STATE_TRANSITIONS', () => {
 
 describe('getAvailableTransitions', () => {
   it('should return barber-specific transitions for barber role', () => {
-    const transitions = getAvailableTransitions('pendiente', 'barber');
+    const transitions = getAvailableTransitions('pendiente', 'peluquero');
 
     expect(transitions.length).toBeGreaterThan(0);
     for (const t of transitions) {
-      expect(['barber', 'any']).toContain(t.role);
+      expect(['peluquero', 'any']).toContain(t.role);
     }
   });
 
@@ -78,20 +78,20 @@ describe('getAvailableTransitions', () => {
     expect(cancelTransition).toBeDefined();
 
     // Admin should not get barber-only transitions
-    const barberOnly = transitions.filter(t => t.role === 'barber');
+    const barberOnly = transitions.filter(t => t.role === 'peluquero');
     expect(barberOnly).toHaveLength(0);
   });
 
   it('should return empty array for terminal states', () => {
-    expect(getAvailableTransitions('completada', 'barber')).toEqual([]);
+    expect(getAvailableTransitions('completada', 'peluquero')).toEqual([]);
     expect(getAvailableTransitions('completada', 'admin')).toEqual([]);
-    expect(getAvailableTransitions('rechazada', 'barber')).toEqual([]);
+    expect(getAvailableTransitions('rechazada', 'peluquero')).toEqual([]);
     expect(getAvailableTransitions('cancelada', 'admin')).toEqual([]);
-    expect(getAvailableTransitions('no_asistio', 'barber')).toEqual([]);
+    expect(getAvailableTransitions('no_asistio', 'peluquero')).toEqual([]);
   });
 
   it('should return "any" role transitions for both barber and admin', () => {
-    const barberTransitions = getAvailableTransitions('confirmada', 'barber');
+    const barberTransitions = getAvailableTransitions('confirmada', 'peluquero');
     const adminTransitions = getAvailableTransitions('confirmada', 'admin');
 
     const barberCancel = barberTransitions.find(t => t.to === 'cancelada');
@@ -103,8 +103,8 @@ describe('getAvailableTransitions', () => {
   });
 
   it('should allow reprogramación from both pendiente and confirmada', () => {
-    const fromPendiente = getAvailableTransitions('pendiente', 'barber');
-    const fromConfirmada = getAvailableTransitions('confirmada', 'barber');
+    const fromPendiente = getAvailableTransitions('pendiente', 'peluquero');
+    const fromConfirmada = getAvailableTransitions('confirmada', 'peluquero');
 
     expect(fromPendiente.find(t => t.to === 'reprogramacion_propuesta')).toBeDefined();
     expect(fromConfirmada.find(t => t.to === 'reprogramacion_propuesta')).toBeDefined();

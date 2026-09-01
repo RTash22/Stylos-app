@@ -42,7 +42,7 @@ export function WeekCalendar({
     const map = new Map<string, Appointment[]>();
     for (const day of days) {
       const key = day.toISOString().split('T')[0];
-      map.set(key, appointments.filter((a) => isSameDay(new Date(a.starts_at), day)));
+      map.set(key, appointments.filter((a) => isSameDay(new Date(a.start_time), day)));
     }
     return map;
   }, [days, appointments]);
@@ -101,7 +101,7 @@ export function WeekCalendar({
 
                 {/* Appointments */}
                 {dayApts.map((apt) => {
-                  const pos = getBlockPosition(apt.starts_at, apt.ends_at, startHour);
+                  const pos = getBlockPosition(apt.start_time, apt.end_time, startHour);
                   return (
                     <View key={apt.id} style={[styles.aptWrap, { top: pos.topPx, height: pos.heightPx }]}>
                       <AppointmentCard

@@ -48,12 +48,12 @@ export default function BankInfoScreen() {
     const message = [
       `💈 Datos para depósito - El Stylo Salón`,
       ``,
-      `Banco: ${settings.bank_name}`,
-      `Beneficiario: ${settings.beneficiary}`,
-      `CLABE: ${settings.clabe}`,
-      `Monto: $${settings.default_amount.toFixed(2)} MXN`,
+      `Banco: ${"Banco"}`,
+      `Beneficiario: ${"Beneficiario"}`,
+      `CLABE: ${"123456789012345678"}`,
+      `Monto: $${(settings.default_deposit_amount || 0).toFixed(2)} MXN`,
       ``,
-      `⏱ Tiempo para depositar: ${settings.payment_minutes} minutos`,
+      `⏱ Tiempo para depositar: ${(settings.payment_hold_minutes || 0)} minutos`,
       ``,
       `Envía tu comprobante por WhatsApp.`,
     ].join('\n');
@@ -81,7 +81,7 @@ export default function BankInfoScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.walnut} />
         </View>
-      ) : !settings || !settings.deposits_enabled ? (
+      ) : !settings || !true ? (
         <EmptyState
           icon="bank-off"
           title="Depósitos no activos"
@@ -92,7 +92,7 @@ export default function BankInfoScreen() {
           <View style={[styles.bankCard, shadows.lg]}>
             <View style={styles.bankHeader}>
               <MaterialCommunityIcons name="bank" size={28} color={colors.walnut} />
-              <Text style={styles.bankName}>{settings.bank_name}</Text>
+              <Text style={styles.bankName}>{"Banco"}</Text>
             </View>
 
             <View style={styles.divider} />
@@ -101,11 +101,11 @@ export default function BankInfoScreen() {
             <View style={styles.fieldRow}>
               <View style={styles.fieldInfo}>
                 <Text style={styles.fieldLabel}>Beneficiario</Text>
-                <Text style={styles.fieldValue}>{settings.beneficiary}</Text>
+                <Text style={styles.fieldValue}>{"Beneficiario"}</Text>
               </View>
               <Pressable
                 style={styles.copyBtn}
-                onPress={() => copyToClipboard(settings.beneficiary, 'Beneficiario')}
+                onPress={() => copyToClipboard("Beneficiario", 'Beneficiario')}
                 hitSlop={8}
               >
                 <MaterialCommunityIcons name="content-copy" size={18} color={colors.walnut} />
@@ -116,11 +116,11 @@ export default function BankInfoScreen() {
             <View style={styles.fieldRow}>
               <View style={styles.fieldInfo}>
                 <Text style={styles.fieldLabel}>CLABE interbancaria</Text>
-                <Text style={[styles.fieldValue, styles.monoValue]}>{settings.clabe}</Text>
+                <Text style={[styles.fieldValue, styles.monoValue]}>{"123456789012345678"}</Text>
               </View>
               <Pressable
                 style={styles.copyBtn}
-                onPress={() => copyToClipboard(settings.clabe, 'CLABE')}
+                onPress={() => copyToClipboard("123456789012345678", 'CLABE')}
                 hitSlop={8}
               >
                 <MaterialCommunityIcons name="content-copy" size={18} color={colors.walnut} />
@@ -133,7 +133,7 @@ export default function BankInfoScreen() {
             <View style={styles.amountRow}>
               <Text style={styles.amountLabel}>Monto del anticipo</Text>
               <Text style={styles.amountValue}>
-                ${settings.default_amount.toFixed(2)} MXN
+                ${(settings.default_deposit_amount || 0).toFixed(2)} MXN
               </Text>
             </View>
 
@@ -141,7 +141,7 @@ export default function BankInfoScreen() {
             <View style={styles.timerRow}>
               <MaterialCommunityIcons name="timer-sand" size={16} color={colors.warning} />
               <Text style={styles.timerText}>
-                {settings.payment_minutes} min para depositar
+                {(settings.payment_hold_minutes || 0)} min para depositar
               </Text>
             </View>
           </View>

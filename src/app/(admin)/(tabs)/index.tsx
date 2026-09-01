@@ -36,7 +36,7 @@ export default function AdminDashboardScreen() {
 
     const [aptsRes, barbersRes, proofsRes] = await Promise.all([
       supabase.from('appointments').select('status', { count: 'exact' }).gte('starts_at', dayStart).lte('starts_at', dayEnd),
-      supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'barber').eq('is_active', true),
+      supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'peluquero').eq('is_active', true),
       supabase.from('deposits').select('id', { count: 'exact' }).eq('status', 'comprobante_recibido'),
     ]);
 

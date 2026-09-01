@@ -85,7 +85,7 @@ export default function AvailabilityScreen() {
               </View>
               {wh.is_active && (
                 <View style={styles.timeRow}>
-                  <Text style={styles.timeText}>{wh.start_time} – {wh.end_time}</Text>
+                  <Text style={styles.timeText}>{wh.start_local_time} – {wh.end_local_time}</Text>
                   {wh.break_start && wh.break_end && (
                     <Text style={styles.breakText}>
                       Descanso: {wh.break_start} – {wh.break_end}
@@ -105,7 +105,7 @@ export default function AvailabilityScreen() {
           timeBlocks.map((tb) => (
             <View key={tb.id} style={[styles.blockCard, shadows.sm]}>
               <View style={styles.blockInfo}>
-                <Text style={styles.blockDate}>{formatFullDate(toLocalDate(tb.starts_at))}</Text>
+                <Text style={styles.blockDate}>{formatFullDate(toLocalDate(tb.start_local_time))}</Text>
                 <Text style={styles.blockReason}>{tb.reason ?? 'Sin motivo'}</Text>
               </View>
               <Pressable

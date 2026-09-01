@@ -142,9 +142,9 @@ export default function AppointmentDetailScreen() {
     return <ErrorState message={error ?? 'Cita no encontrada'} onRetry={fetchAppointment} />;
   }
 
-  const transitions = getAvailableTransitions(appointment.status, role ?? 'barber');
-  const startDate = toLocalDate(appointment.starts_at);
-  const endDate = toLocalDate(appointment.ends_at);
+  const transitions = getAvailableTransitions(appointment.status, role ?? 'peluquero');
+  const startDate = toLocalDate(appointment.start_time);
+  const endDate = toLocalDate(appointment.end_time);
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -174,11 +174,11 @@ export default function AppointmentDetailScreen() {
             <MaterialCommunityIcons name="account" size={18} color={colors.walnut} />
             <Text style={styles.infoText}>{appointment.client?.full_name ?? '—'}</Text>
           </View>
-          {appointment.client?.phone && (
+          {appointment.client?.phone_e164 && (
             <View style={styles.infoRow}>
               <MaterialCommunityIcons name="phone" size={18} color={colors.icon} />
               <Text style={styles.infoText}>
-                {appointment.client.phone.slice(0, 4)}••••{appointment.client.phone.slice(-2)}
+                {appointment.client.phone_e164.slice(0, 4)}••••{appointment.client.phone_e164.slice(-2)}
               </Text>
             </View>
           )}
