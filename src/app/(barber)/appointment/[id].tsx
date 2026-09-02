@@ -53,7 +53,7 @@ export default function AppointmentDetailScreen() {
     try {
       const { data, error: e } = await supabase
         .from('appointments')
-        .select('*, client:clients(*), service:services(*), deposit:deposits(*)')
+        .select('*, client:clients(*), service:services(*)')
         .eq('id', id)
         .single();
       if (e) setError(e.message);
@@ -207,20 +207,11 @@ export default function AppointmentDetailScreen() {
           </View>
         )}
 
-        {/* Notes */}
-        {appointment.notes && (
+        {/* Customer Notes */}
+        {appointment.customer_notes && (
           <View style={[styles.card, shadows.sm]}>
-            <Text style={styles.sectionTitle}>Notas</Text>
-            <Text style={styles.notesText}>{appointment.notes}</Text>
-          </View>
-        )}
-
-        {/* Deposit info */}
-        {appointment.deposit && (
-          <View style={[styles.card, shadows.sm]}>
-            <Text style={styles.sectionTitle}>Anticipo</Text>
-            <StatusBadge status={appointment.deposit.status as any} size="sm" />
-            <Text style={styles.infoText}>Ref: {appointment.deposit.reference}</Text>
+            <Text style={styles.sectionTitle}>Notas del cliente</Text>
+            <Text style={styles.notesText}>{appointment.customer_notes}</Text>
           </View>
         )}
 
