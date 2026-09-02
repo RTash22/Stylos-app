@@ -30,9 +30,6 @@ export default function AdminTabsLayout() {
       <Tabs.Screen name="strikes" options={{
         title: 'Strikes', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="alert-decagram-outline" size={size} color={color} />,
       }} />
-      <Tabs.Screen name="proofs" options={{
-        title: 'Comprobantes', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="file-document-check-outline" size={size} color={color} />,
-      }} />
       <Tabs.Screen name="settings" options={{
         title: 'Ajustes', tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="cog-outline" size={size} color={color} />,
       }} />
