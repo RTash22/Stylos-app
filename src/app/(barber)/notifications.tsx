@@ -44,8 +44,6 @@ export default function NotificationsScreen() {
       router.push(`/(barber)/appointment/${data.appointmentId}`);
     } else if (data?.clientId) {
       router.push(`/(barber)/client/${data.clientId}`);
-    } else if (data?.proofId) {
-      router.push(`/(admin)/proof/${data.proofId}`);
     }
   }, [markAsRead, router]);
 

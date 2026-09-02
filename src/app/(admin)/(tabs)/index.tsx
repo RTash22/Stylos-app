@@ -19,7 +19,6 @@ interface DashStats {
   todayCompleted: number;
   todayNoShow: number;
   activeBarbers: number;
-  pendingProofs: number;
 }
 
 export default function AdminDashboardScreen() {
@@ -34,10 +33,9 @@ export default function AdminDashboardScreen() {
     const dayStart = startOfDay(today).toISOString();
     const dayEnd = endOfDay(today).toISOString();
 
-    const [aptsRes, barbersRes, proofsRes] = await Promise.all([
-      supabase.from('appointments').select('status', { count: 'exact' }).gte('starts_at', dayStart).lte('starts_at', dayEnd),
+    const [aptsRes, barbersRes] = await Promise.all([
+      supabase.from('appointments').select('status', { count: 'exact' }).gte('start_time', dayStart).lte('start_time', dayEnd),
       supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'peluquero').eq('is_active', true),
-      supabase.from('deposits').select('id', { count: 'exact' }).eq('status', 'comprobante_recibido'),
     ]);
 
     const apts = (aptsRes.data ?? []) as { status: string }[];
@@ -47,7 +45,6 @@ export default function AdminDashboardScreen() {
       todayCompleted: apts.filter((a) => a.status === 'completada').length,
       todayNoShow: apts.filter((a) => a.status === 'no_asistio').length,
       activeBarbers: barbersRes.count ?? 0,
-      pendingProofs: proofsRes.count ?? 0,
     });
     setLoading(false);
   }, []);
@@ -65,7 +62,6 @@ export default function AdminDashboardScreen() {
     { label: 'Completadas', value: stats.todayCompleted, icon: 'check-circle' as const, color: colors.success },
     { label: 'No asistencias', value: stats.todayNoShow, icon: 'account-off' as const, color: colors.danger },
     { label: 'Peluqueros activos', value: stats.activeBarbers, icon: 'account-group' as const, color: colors.oliveGold },
-    { label: 'Comprobantes pendientes', value: stats.pendingProofs, icon: 'file-document-outline' as const, color: colors.warning },
   ] : [];
 
   return (
@@ -86,7 +82,7 @@ export default function AdminDashboardScreen() {
 
         {loading ? (
           <View style={styles.statsGrid}>
-            {[1, 2, 3, 4, 5, 6].map((i) => <LoadingSkeleton key={i} height={90} />)}
+            {[1, 2, 3, 4, 5].map((i) => <LoadingSkeleton key={i} height={90} />)}
           </View>
         ) : (
           <View style={styles.statsGrid}>

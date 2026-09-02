@@ -38,9 +38,7 @@ export default function AdminNotificationsScreen() {
       await markAsRead(notification.id);
     }
     const data = notification.data;
-    if (data?.proofId) {
-      router.push(`/(admin)/proof/${data.proofId}`);
-    } else if (data?.barberId) {
+    if (data?.barberId) {
       router.push(`/(admin)/barber/${data.barberId}`);
     }
   }, [markAsRead, router]);
