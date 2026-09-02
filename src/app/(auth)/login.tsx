@@ -27,7 +27,9 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email.trim() || !password) {
+    if (loading) return;
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !password) {
       setError('Ingresa tu correo y contraseña.');
       return;
     }
@@ -35,15 +37,19 @@ export default function LoginScreen() {
     setLoading(true);
     setError(null);
 
-    const result = await signIn(email.trim(), password);
-    if (result.error) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      setError('Credenciales incorrectas. Verifica tu correo y contraseña.');
-    } else {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    try {
+      const result = await signIn(cleanEmail, password);
+      if (result.error) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        setError('Credenciales incorrectas. Verifica tu correo y contraseña.');
+      } else {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+    } catch {
+      setError('Ocurrió un error al iniciar sesión. Intenta de nuevo.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
