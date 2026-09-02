@@ -3,7 +3,7 @@
  */
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, ScrollView, Pressable, TextInput, Switch, Alert, StyleSheet,
+  View, Text, ScrollView, Pressable, Switch, Alert, StyleSheet,
 } from 'react-native';
 import { useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,8 +14,7 @@ import { useWorkingHours, useTimeBlocks, useMutationGuard } from '@/hooks';
 import { colors, spacing, typography, radii, shadows } from '@/theme';
 import { MIN_TOUCH_TARGET } from '@/constants';
 import { LoadingSkeleton, ConfirmActionDialog } from '@/components/ui';
-import { formatFullDate, toLocalDate, nowLocal, addDays, startOfDay, endOfDay } from '@/utils/dates';
-import type { DayOfWeek } from '@/types';
+import { formatFullDate, formatTime, toLocalDate, nowLocal, addDays, startOfDay, endOfDay } from '@/utils/dates';
 
 const DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
@@ -86,11 +85,6 @@ export default function AvailabilityScreen() {
               {wh.is_active && (
                 <View style={styles.timeRow}>
                   <Text style={styles.timeText}>{wh.start_local_time} – {wh.end_local_time}</Text>
-                  {wh.break_start && wh.break_end && (
-                    <Text style={styles.breakText}>
-                      Descanso: {wh.break_start} – {wh.break_end}
-                    </Text>
-                  )}
                 </View>
               )}
             </View>
@@ -105,8 +99,10 @@ export default function AvailabilityScreen() {
           timeBlocks.map((tb) => (
             <View key={tb.id} style={[styles.blockCard, shadows.sm]}>
               <View style={styles.blockInfo}>
-                <Text style={styles.blockDate}>{formatFullDate(toLocalDate(tb.start_local_time))}</Text>
-                <Text style={styles.blockReason}>{tb.reason ?? 'Sin motivo'}</Text>
+                <Text style={styles.blockDate}>
+                  {formatFullDate(toLocalDate(tb.start_time))} · {formatTime(toLocalDate(tb.start_time))} – {formatTime(toLocalDate(tb.end_time))}
+                </Text>
+                <Text style={styles.blockReason}>{tb.reason || 'Bloqueado'}</Text>
               </View>
               <Pressable
                 style={styles.deleteBtn}
@@ -148,7 +144,6 @@ const styles = StyleSheet.create({
   dayNameInactive: { color: colors.disabled },
   timeRow: { marginTop: spacing.xs },
   timeText: { fontFamily: typography.fontFamily.regular, fontSize: typography.sizes.subheadline, color: colors.icon },
-  breakText: { fontFamily: typography.fontFamily.regular, fontSize: typography.sizes.caption, color: colors.placeholder },
   emptyText: { fontFamily: typography.fontFamily.regular, fontSize: typography.sizes.body, color: colors.placeholder },
   blockCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: radii.lg, padding: spacing.md },
   blockInfo: { flex: 1 },
