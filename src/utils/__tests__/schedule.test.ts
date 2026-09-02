@@ -16,21 +16,79 @@ jest.mock('@/utils/dates', () => ({
   parseISO: (s: string) => new Date(s),
   differenceInMinutes: (end: Date, start: Date) =>
     Math.round((end.getTime() - start.getTime()) / 60000),
-  addMinutes: (date: Date, mins: number) => new Date(date.getTime() + mins * 60000),
   getMinutesFromMidnight: (date: Date) => date.getHours() * 60 + date.getMinutes(),
   doRangesOverlap: (aS: Date, aE: Date, bS: Date, bE: Date) =>
     aS < bE && aE > bS,
-  setTimeOnDate: (_date: Date, hours: number, minutes: number) => {
-    const d = new Date(2025, 0, 1, hours, minutes);
-    return d;
-  },
 }));
 
 import { getBlockPosition, detectOverlap, buildDayBlocks, generateHourLabels } from '../schedule';
 import type { Appointment, WorkingHours, TimeBlock } from '@/types';
 
+function createAppointment(overrides?: Partial<Appointment>): Appointment {
+  return {
+    id: 'apt-1',
+    client_id: 'c-1',
+    barber_id: 'b-1',
+    service_id: 's-1',
+    start_time: '2025-01-15T09:00:00.000Z',
+    end_time: '2025-01-15T10:00:00.000Z',
+    status: 'confirmada',
+    source: 'app',
+    requires_deposit: false,
+    deposit_amount_snapshot: 0,
+    deposit_paid_at: null,
+    payment_status: 'no_requerido',
+    payment_deadline: null,
+    service_name_snapshot: 'Corte Clásico',
+    service_price_snapshot: 200,
+    customer_notes: null,
+    history_notes: null,
+    products_used: null,
+    recommendations: null,
+    cancellation_reason: null,
+    rejection_reason: null,
+    accepted_at: '2025-01-15T00:00:00.000Z',
+    completed_at: null,
+    no_show_at: null,
+    created_by: 'b-1',
+    version: 1,
+    created_at: '2025-01-15T00:00:00.000Z',
+    updated_at: '2025-01-15T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+function createWorkingHours(overrides?: Partial<WorkingHours>): WorkingHours {
+  return {
+    id: 'wh-1',
+    barber_id: 'b-1',
+    day_of_week: 3,
+    start_local_time: '09:00',
+    end_local_time: '20:00',
+    start_minute: 540,
+    end_minute: 1200,
+    is_active: true,
+    created_at: '2025-01-15T00:00:00.000Z',
+    updated_at: '2025-01-15T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+function createTimeBlock(overrides?: Partial<TimeBlock>): TimeBlock {
+  return {
+    id: 'tb-1',
+    barber_id: 'b-1',
+    start_time: '2025-01-15T14:00:00.000Z',
+    end_time: '2025-01-15T15:00:00.000Z',
+    reason: 'Lunch',
+    is_active: true,
+    created_at: '2025-01-15T00:00:00.000Z',
+    updated_at: '2025-01-15T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
 describe('getBlockPosition', () => {
-  // Use local date constructors to avoid UTC conversion issues in the mock
   it('should calculate position for a 9:00-10:00 block (day start = 9)', () => {
     const start = new Date(2025, 0, 15, 9, 0, 0);
     const end = new Date(2025, 0, 15, 10, 0, 0);
@@ -75,21 +133,7 @@ describe('getBlockPosition', () => {
 });
 
 describe('detectOverlap', () => {
-  const baseAppointment: Appointment = {
-    id: 'apt-1',
-    client_id: 'c-1',
-    barber_id: 'b-1',
-    service_id: 's-1',
-    start_time: '2025-01-15T09:00:00.000Z',
-    end_time: '2025-01-15T10:00:00.000Z',
-    status: 'confirmada',
-    history_notes: null, customer_notes: null,
-    proposed_start_time: null,
-    proposed_end_time: null,
-    cancellation_reason: null,
-    created_at: '2025-01-15T00:00:00.000Z',
-    updated_at: '2025-01-15T00:00:00.000Z',
-  };
+  const baseAppointment = createAppointment();
 
   it('should detect overlap with existing appointment', () => {
     const result = detectOverlap(
@@ -114,14 +158,7 @@ describe('detectOverlap', () => {
   });
 
   it('should detect overlap with time blocks', () => {
-    const block: TimeBlock = {
-      id: 'tb-1',
-      barber_id: 'b-1',
-      start_time: '2025-01-15T14:00:00.000Z',
-      end_time: '2025-01-15T15:00:00.000Z',
-      reason: 'Lunch',
-      created_at: '2025-01-15T00:00:00.000Z',
-    };
+    const block = createTimeBlock();
 
     const result = detectOverlap(
       new Date('2025-01-15T14:30:00.000Z'),
@@ -146,33 +183,58 @@ describe('detectOverlap', () => {
   });
 
   it('should ignore cancelled/rejected appointments', () => {
-    const cancelledApt: Appointment = {
-      ...baseAppointment,
+    const cancelledApt = createAppointment({
       id: 'apt-2',
       status: 'cancelada',
-    };
+    });
+    const rejectedApt = createAppointment({
+      id: 'apt-3',
+      status: 'rechazada',
+    });
 
-    const result = detectOverlap(
+    const resultCancelled = detectOverlap(
       new Date('2025-01-15T09:00:00.000Z'),
       new Date('2025-01-15T10:00:00.000Z'),
       [cancelledApt],
       [],
     );
+    expect(resultCancelled).toBe(false);
 
-    expect(result).toBe(false);
+    const resultRejected = detectOverlap(
+      new Date('2025-01-15T09:00:00.000Z'),
+      new Date('2025-01-15T10:00:00.000Z'),
+      [rejectedApt],
+      [],
+    );
+    expect(resultRejected).toBe(false);
   });
 
   it('should check pendiente appointments for overlap', () => {
-    const pendingApt: Appointment = {
-      ...baseAppointment,
-      id: 'apt-3',
+    const pendingApt = createAppointment({
+      id: 'apt-4',
       status: 'pendiente',
-    };
+    });
 
     const result = detectOverlap(
       new Date('2025-01-15T09:30:00.000Z'),
       new Date('2025-01-15T10:30:00.000Z'),
       [pendingApt],
+      [],
+    );
+
+    expect(result).toBe(true);
+  });
+
+  it('should check reprogramacion_propuesta appointments for overlap', () => {
+    const proposedApt = createAppointment({
+      id: 'apt-5',
+      status: 'reprogramacion_propuesta',
+    });
+
+    const result = detectOverlap(
+      new Date('2025-01-15T09:30:00.000Z'),
+      new Date('2025-01-15T10:30:00.000Z'),
+      [proposedApt],
       [],
     );
 
@@ -203,20 +265,10 @@ describe('generateHourLabels', () => {
 
 describe('buildDayBlocks', () => {
   const date = new Date(2025, 0, 15); // Wednesday
-
-  const workingHours: WorkingHours = {
-    id: 'wh-1',
-    barber_id: 'b-1',
-    day_of_week: 3,
-    start_time: '09:00',
-    end_time: '20:00',
-    
-    
-    is_active: true,
-  };
+  const workingHours = createWorkingHours();
 
   it('should return empty for inactive working hours', () => {
-    const inactive: WorkingHours = { ...workingHours, is_active: false };
+    const inactive = createWorkingHours({ is_active: false });
     const blocks = buildDayBlocks(date, inactive, [], [], 9, 20);
     expect(blocks).toEqual([]);
   });
@@ -226,21 +278,25 @@ describe('buildDayBlocks', () => {
     expect(blocks).toEqual([]);
   });
 
-  it('should include break block', () => {
+  it('should generate available slots for active working hours without fictitious break', () => {
     const blocks = buildDayBlocks(date, workingHours, [], [], 9, 20);
-    const breakBlock = blocks.find(b => b.type === 'break');
-    expect(breakBlock).toBeDefined();
-    expect(breakBlock!.label).toBe('Descanso');
-  });
+    const availableBlocks = blocks.filter((b) => b.type === 'available');
+    const breakBlock = blocks.find((b) => b.type === 'break');
 
-  it('should include available slots', () => {
-    const blocks = buildDayBlocks(date, workingHours, [], [], 9, 20);
-    const availableBlocks = blocks.filter(b => b.type === 'available');
     expect(availableBlocks.length).toBeGreaterThan(0);
+    expect(breakBlock).toBeUndefined();
   });
 
   it('should sort blocks by start time', () => {
-    const blocks = buildDayBlocks(date, workingHours, [], [], 9, 20);
+    const apt = createAppointment({
+      start_time: '2025-01-15T10:00:00.000Z',
+      end_time: '2025-01-15T11:00:00.000Z',
+    });
+    const tb = createTimeBlock({
+      start_time: '2025-01-15T16:00:00.000Z',
+      end_time: '2025-01-15T17:00:00.000Z',
+    });
+    const blocks = buildDayBlocks(date, workingHours, [apt], [tb], 9, 20);
 
     for (let i = 1; i < blocks.length; i++) {
       expect(blocks[i].startMinutes).toBeGreaterThanOrEqual(blocks[i - 1].startMinutes);
@@ -248,41 +304,39 @@ describe('buildDayBlocks', () => {
   });
 
   it('should include appointment blocks', () => {
-    const apt: Appointment = {
+    const apt = createAppointment({
       id: 'apt-1',
-      client_id: 'c-1',
-      barber_id: 'b-1',
-      service_id: 's-1',
       start_time: '2025-01-15T10:00:00.000Z',
       end_time: '2025-01-15T11:00:00.000Z',
-      status: 'confirmada',
-      history_notes: null, customer_notes: null,
-      proposed_start_time: null,
-      proposed_end_time: null,
-      cancellation_reason: null,
-      created_at: '2025-01-15T00:00:00.000Z',
-      updated_at: '2025-01-15T00:00:00.000Z',
-    };
+    });
 
     const blocks = buildDayBlocks(date, workingHours, [apt], [], 9, 20);
-    const aptBlock = blocks.find(b => b.type === 'appointment');
+    const aptBlock = blocks.find((b) => b.type === 'appointment');
     expect(aptBlock).toBeDefined();
-    expect(aptBlock!.appointment).toBe(apt);
+    expect(aptBlock?.appointment).toEqual(apt);
   });
 
-  it('should include manual time blocks', () => {
-    const tb: TimeBlock = {
+  it('should include manual time blocks with reason as label', () => {
+    const tb = createTimeBlock({
       id: 'tb-1',
-      barber_id: 'b-1',
-      start_time: '2025-01-15T16:00:00.000Z',
-      end_time: '2025-01-15T17:00:00.000Z',
       reason: 'Personal',
-      created_at: '2025-01-15T00:00:00.000Z',
-    };
+    });
 
     const blocks = buildDayBlocks(date, workingHours, [], [tb], 9, 20);
-    const blocked = blocks.find(b => b.type === 'blocked');
+    const blocked = blocks.find((b) => b.type === 'blocked');
     expect(blocked).toBeDefined();
-    expect(blocked!.label).toBe('Personal');
+    expect(blocked?.label).toBe('Personal');
+  });
+
+  it('should use fallback label when time block reason is null', () => {
+    const tb = createTimeBlock({
+      id: 'tb-2',
+      reason: null,
+    });
+
+    const blocks = buildDayBlocks(date, workingHours, [], [tb], 9, 20);
+    const blocked = blocks.find((b) => b.type === 'blocked');
+    expect(blocked).toBeDefined();
+    expect(blocked?.label).toBe('Bloqueado');
   });
 });

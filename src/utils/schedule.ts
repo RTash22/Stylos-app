@@ -11,8 +11,6 @@ import {
   doRangesOverlap,
   parseISO,
   differenceInMinutes,
-  addMinutes,
-  setTimeOnDate,
 } from '@/utils/dates';
 
 export interface ScheduleBlock {
@@ -78,12 +76,12 @@ export function detectOverlap(
  * Build the full list of schedule blocks for one day.
  */
 export function buildDayBlocks(
-  date: Date,
+  _date: Date,
   workingHours: WorkingHours | undefined,
   appointments: Appointment[],
   timeBlocks: TimeBlock[],
   dayStartHour: number,
-  dayEndHour: number,
+  _dayEndHour: number,
 ): ScheduleBlock[] {
   if (!workingHours || !workingHours.is_active) {
     return [];
@@ -113,32 +111,6 @@ export function buildDayBlocks(
     });
   }
 
-  // Add break block
-  if (false) {
-    const breakStartDate = setTimeOnDate(
-      date,
-      parseInt(null.split(':')[0]),
-      parseInt(null.split(':')[1]),
-    );
-    const breakEndDate = setTimeOnDate(
-      date,
-      parseInt(null.split(':')[0]),
-      parseInt(null.split(':')[1]),
-    );
-    const startMinutes = getMinutesFromMidnight(breakStartDate);
-    const durationMinutes = differenceInMinutes(breakEndDate, breakStartDate);
-    const dayStartMinutes = dayStartHour * 60;
-    blocks.push({
-      id: `break-${workingHours.id}`,
-      type: 'break',
-      topPx: (startMinutes - dayStartMinutes) * PX_PER_MINUTE,
-      heightPx: durationMinutes * PX_PER_MINUTE,
-      startMinutes,
-      durationMinutes,
-      label: 'Descanso',
-    });
-  }
-
   // Find available slots by filling gaps
   const occupiedRanges = blocks
     .map((b) => ({
@@ -148,11 +120,11 @@ export function buildDayBlocks(
     .sort((a, b) => a.start - b.start);
 
   const whStartMinutes =
-    parseInt(workingHours.start_local_time.split(':')[0]) * 60 +
-    parseInt(workingHours.start_local_time.split(':')[1]);
+    parseInt(workingHours.start_local_time.split(':')[0], 10) * 60 +
+    parseInt(workingHours.start_local_time.split(':')[1], 10);
   const whEndMinutes =
-    parseInt(workingHours.end_local_time.split(':')[0]) * 60 +
-    parseInt(workingHours.end_local_time.split(':')[1]);
+    parseInt(workingHours.end_local_time.split(':')[0], 10) * 60 +
+    parseInt(workingHours.end_local_time.split(':')[1], 10);
 
   let cursor = whStartMinutes;
   for (const range of occupiedRanges) {
