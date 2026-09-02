@@ -33,7 +33,7 @@ export function useWorkingHours(barberId: string | null): UseWorkingHoursReturn 
 
     try {
       const { data, error: fetchError } = await supabase
-        .from('working_hours')
+        .from('barber_availability')
         .select('*')
         .eq('barber_id', barberId)
         .order('day_of_week', { ascending: true });
@@ -64,7 +64,7 @@ export function useWorkingHours(barberId: string | null): UseWorkingHoursReturn 
   const update = useCallback(
     async (id: string, changes: Partial<WorkingHours>): Promise<{ error: string | null }> => {
       const { error: updateError } = await supabase
-        .from('working_hours')
+        .from('barber_availability')
         .update(changes)
         .eq('id', id);
 

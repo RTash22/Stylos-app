@@ -11,9 +11,6 @@ export type UserRole = Database['public']['Enums']['profile_role'];
 
 export type AppointmentStatus = Database['public']['Enums']['appointment_status'];
 
-// Assuming the deposit status was replaced or handled by payment_status
-export type DepositStatus = Database['public']['Enums']['payment_status'];
-
 export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type Profile = Database['public']['Tables']['profiles']['Row'];
@@ -26,7 +23,6 @@ export type Appointment = Database['public']['Tables']['appointments']['Row'] & 
   client?: Client;
   service?: Service;
   barber?: Profile;
-  // TODO: Update deposit reference if it was changed to payments
 };
 
 // Map old schema to new schema types temporarily for compilation
@@ -52,23 +48,6 @@ export interface AestheticNote {
   products_used: string | null;
   observations: string | null;
   recommendations: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Deposit {
-  id: string;
-  appointment_id: string;
-  client_id: string;
-  amount: number;
-  reference: string;
-  status: DepositStatus;
-  proof_path: string | null;
-  proof_uploaded_at: string | null;
-  expires_at: string;
-  verified_by: string | null;
-  verified_at: string | null;
-  rejection_reason: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -44,12 +44,12 @@ export function useTimeBlocks({
 
     try {
       const { data, error: fetchError } = await supabase
-        .from('time_blocks')
+        .from('barber_time_off')
         .select('*')
         .eq('barber_id', barberId)
-        .gte('starts_at', startOfDay(dateStart).toISOString())
-        .lte('starts_at', endOfDay(dateEnd).toISOString())
-        .order('starts_at', { ascending: true });
+        .gte('start_time', startOfDay(dateStart).toISOString())
+        .lte('start_time', endOfDay(dateEnd).toISOString())
+        .order('start_time', { ascending: true });
 
       if (fetchError) {
         setError(fetchError.message);
@@ -70,7 +70,7 @@ export function useTimeBlocks({
   const create = useCallback(
     async (block: Omit<TimeBlock, 'id' | 'created_at'>): Promise<{ error: string | null }> => {
       const { error: insertError } = await supabase
-        .from('time_blocks')
+        .from('barber_time_off')
         .insert(block);
 
       if (insertError) {
@@ -86,7 +86,7 @@ export function useTimeBlocks({
   const remove = useCallback(
     async (id: string): Promise<{ error: string | null }> => {
       const { error: deleteError } = await supabase
-        .from('time_blocks')
+        .from('barber_time_off')
         .delete()
         .eq('id', id);
 

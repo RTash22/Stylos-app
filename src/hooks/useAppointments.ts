@@ -48,11 +48,11 @@ export function useAppointments({
     try {
       const { data, error: fetchError } = await supabase
         .from('appointments')
-        .select('*, client:clients(*), service:services(*), deposit:deposits(*)')
+        .select('*, client:clients(*), service:services(*)')
         .eq('barber_id', barberId)
-        .gte('starts_at', startOfDay(dateStart).toISOString())
-        .lte('starts_at', endOfDay(dateEnd).toISOString())
-        .order('starts_at', { ascending: true });
+        .gte('start_time', startOfDay(dateStart).toISOString())
+        .lte('start_time', endOfDay(dateEnd).toISOString())
+        .order('start_time', { ascending: true });
 
       if (fetchError) {
         setError(fetchError.message);
